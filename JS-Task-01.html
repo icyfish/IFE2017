@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 01</title>
+  </head>
+<body>
+
+  <label>请输入北京今天空气质量：<input id="aqi-input" type="text"></label>
+  <button id="button">确认填写</button>
+
+  <div>您输入的值是：<span id="aqi-display">尚无录入</span></div>
+  <div><span id="validation"></span></div>
+
+<script type="text/javascript">
+
+(function() {
+  /*
+  在注释下方写下代码
+  给按钮button绑定一个点击事件
+  在事件处理函数中
+  获取aqi-input输入的值，并显示在aqi-display中
+  */
+
+  const btn = document.getElementById('button');
+  const aqiInput = document.getElementById('aqi-input');
+  const aqiDisplay = document.getElementById('aqi-display');
+  const validator = document.getElementById('validation');
+
+  function getAqi(){
+    const strInput = aqiInput.value;
+    validator.textContent = '';
+    if(strInput.match(/^[0-9]+$/)){
+      aqiDisplay.textContent = strInput;
+      aqiInput.value = '';
+    } else{
+      aqiInput.focus();
+      validator.textContent = '请输入正确格式(数字)!';
+    }
+  }
+
+  function getAqiByClick(){
+    btn.addEventListener('click', () => {
+      getAqi();
+    })
+  };
+
+  function getAqiByEnter(){
+    aqiInput.addEventListener('keyup', (e) => {
+      e.preventDefault();
+      if(e.keyCode === 13){
+        getAqi();
+      }
+    })
+  };
+
+  getAqiByClick();
+  getAqiByEnter();
+
+})();
+
+</script>
+</body>
+</html>
