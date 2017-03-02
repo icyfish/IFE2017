@@ -27,6 +27,10 @@
   const aqiDisplay = document.getElementById('aqi-display');
   const validator = document.getElementById('validation');
 
+  // 获取aqi-input输入的值，并进行格式检查,
+  // 检查通过则将输入值显示在aqi-display中
+  // 不通过则输出提示文字
+
   function getAqi(){
     const strInput = aqiInput.value;
     validator.textContent = '';
@@ -39,11 +43,15 @@
     }
   }
 
+  // 添加点击事件
+
   function getAqiByClick(){
     btn.addEventListener('click', () => {
       getAqi();
     })
   };
+
+  // 添加键盘Enter提交事件
 
   function getAqiByEnter(){
     aqiInput.addEventListener('keyup', (e) => {
