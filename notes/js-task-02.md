@@ -1,4 +1,8 @@
-[零基础JavaScript编码（二）](http://ife.baidu.com/course/detail/id/91)
+[2. 零基础JavaScript编码（二）](http://ife.baidu.com/course/detail/id/91)
+
+[代码](https://github.com/icyfish/IFE2017/blob/master/js-task-02.html)
+
+[Demo](https://icyfish.github.io/IFE2017/js-task-02.html)
 
 **学习笔记:**
 
