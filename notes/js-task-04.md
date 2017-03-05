@@ -106,6 +106,6 @@ element.appendChild(document.createTextNode('some text'));
 
 // 结果: <h1>some text</h1>
 ```
-##参考:
+## 参考:
 
 [DOM Core](http://reference.sitepoint.com/javascript/domcore)
