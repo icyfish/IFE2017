@@ -1,0 +1,255 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 05</title>
+  </head>
+  <style media="screen">
+    .num-queue {
+    	height: 200px;
+    	margin: 20px 0 1px 0;
+    	position: relative;
+    	white-space: nowrap;
+    	font-size: 0;
+    }
+    span {
+      font-size: 0;
+      display: inline-block;
+    	margin: 0 0 0 2px;
+    	vertical-align: bottom;
+    	position: relative;
+    	width: 20px;
+    	background: #2be;
+    }
+    .sort-container {
+      margin: 20px 0 1px 0;
+    }
+  </style>
+<body>
+  <div>
+    <input type='text' class='num'/>
+    <button class='left-in'>左侧入</button>
+    <button class='right-in'>右侧入</button>
+    <button class='left-out'>左侧出</button>
+    <button class='right-out'>右侧出</button>
+  </div>
+  <div class='num-queue'>
+    <!-- 初始数据 -->
+    <span>23</span>
+    <span>34</span>
+    <span>14</span>
+    <span>38</span>
+    <span>42</span>
+    <span>23</span>
+    <span>15</span>
+    <span>54</span>
+    <span>65</span>
+    <span>43</span>
+    <span>78</span>
+  </div>
+  <div class='sort'>
+    <button class='bubble'>冒泡排序</button>
+    <button class='selection'>选择排序</button>
+    <button class='insertion'>插入排序</button>
+  </div>
+  <div class='sort-container'>
+  </div>
+</body>
+<script>
+
+  const inputBox = document.querySelector('.num');
+  const leftIn = document.querySelector('.left-in');
+  const rightIn = document.querySelector('.right-in');
+  const leftOut = document.querySelector('.left-out');
+  const rightOut = document.querySelector('.right-out');
+  const bubble = document.querySelector('.bubble');
+  const selection = document.querySelector('.selection');
+  const insertion = document.querySelector('.insertion');
+
+  // 从右侧添加数字
+
+  function appendItem(){
+    const numQueue = document.querySelector('.num-queue');
+    const numContainer = document.createElement('span');
+    if(validateInput(inputBox)){
+      numContainer.textContent = inputBox.value;
+      // 动态添加图表高度样式
+      numContainer.style.height = +inputBox.value;
+      numQueue.appendChild(numContainer);
+    };
+  };
+
+  // 从左侧添加数字
+
+  function insertItem(){
+    const numQueue = document.querySelector('.num-queue');
+    const numContainer = document.createElement('span');
+    if(validateInput(inputBox)){
+      numContainer.textContent = inputBox.value;
+      numContainer.style.height = +inputBox.value;
+      numQueue.insertBefore(numContainer, numQueue.firstChild);
+    };
+  }
+
+  // 移除数字
+
+  function removeItem(item){
+    const numQueue = document.querySelector('.num-queue');
+    if(numQueue.firstElementChild){
+      numQueue.removeChild(item);
+      alert(`队列中还剩下${numQueue.children.length}个数字。`);
+    } else {
+      alert(`队列中没有数字, 请添加。`);
+    }
+  }
+
+  // 限制输入为10-100之内的数字
+
+  function validateInput(input){
+    if(Number(input.value) >= 10 && Number(input.value) <= 100){
+      return input.value;
+    } else{
+      input.focus();
+      alert('请输入10-100之间的数字!');
+    }
+  };
+
+  // 为按钮添加点击事件
+
+  function clickHandler(btn){
+    btn.addEventListener('click', () => {
+      const numQueue = document.querySelector('.num-queue');
+      switch (btn) {
+        case rightIn:
+          if(document.querySelectorAll('.num-queue span').length < 60){
+            // 将数列长度限制为60个以内
+            appendItem();
+          } else {
+            alert('数字个数已达60上限!');
+          }
+          inputBox.value = '';
+          break;
+        case leftIn:
+          if(document.querySelectorAll('.num-queue span').length < 60){
+            numQueue.children[0] ? insertItem() : appendItem();
+          } else {
+            alert('数字个数已达60上限!');
+          }
+          inputBox.value = '';
+          break;
+        case rightOut:
+          removeItem(numQueue.lastElementChild);
+          break;
+        case leftOut:
+          removeItem(numQueue.firstElementChild);
+          break;
+        case bubble:
+          bubbleSort();
+          renderSortedArray(bubbleSort);
+          break;
+        case selection:
+          selectionSort();
+          renderSortedArray(selectionSort);
+          break;
+        case insertion:
+          insertionSort();
+          renderSortedArray(insertionSort);
+          break;
+      }
+    })
+  };
+
+  // 点击队列某个元素以删除该元素
+
+  function clickNumToRemove(){
+    const nums = document.querySelectorAll('.num-queue span');
+    nums.forEach(num => {
+      num.onclick = function(){
+        removeItem(this);
+      }
+    });
+  };
+
+  function swap(items, firstIndex, secondIndex){
+    var temp = items[firstIndex];
+    items[firstIndex] = items[secondIndex];
+    items[secondIndex] = temp;
+  };
+
+  // 冒泡排序
+  function bubbleSort(){
+    let items = [...document.querySelectorAll('.num-queue span')].map(num => +num.textContent);
+    let len = items.length, i, j, stop;
+
+    for (i = 0; i < len; i++){
+      for (j = 0, stop = len-i; j < stop; j++){
+        if (items[j] > items[j+1]){
+          swap(items, j, j+1);
+        }
+      }
+    }
+    return items;
+  };
+
+  // 选择排序
+  function selectionSort(){
+    let items = [...document.querySelectorAll('.num-queue span')].map(num => +num.textContent);
+    let len = items.length, min;
+
+    for (i = 0; i < len; i++){
+      min = i;
+      for(j = i + 1; j < len; j++){
+        if(items[j] < items[min]){
+          min = j;
+        }
+      }
+      if(i != min){
+        swap(items, i, min);
+      }
+    }
+    return items;
+  };
+
+  // 插入排序
+
+  function insertionSort() {
+    let items = [...document.querySelectorAll('.num-queue span')].map(num => +num.textContent);
+    let len = items.length, value, i, j;
+    for (i=0; i < len; i++) {
+      value = items[i];
+      for (j=i-1; j > -1 && items[j] > value; j--) {
+        items[j+1] = items[j];
+      }
+      items[j+1] = value;
+    }
+    return items;
+  };
+
+  // 将排好序的数组渲染到DOM中
+  function renderSortedArray(sortFunc){
+    const sortedArray = sortFunc().map(num => {
+      return `<span style="height: ${num}px;">${num}</span>`;
+    });
+    document.querySelector('.sort-container').innerHTML = sortedArray.join('');
+  }
+
+
+  function init(){
+    clickHandler(rightIn);
+    clickHandler(leftIn);
+    clickHandler(rightOut);
+    clickHandler(leftOut);
+    clickHandler(bubble);
+    clickHandler(selection);
+    clickHandler(insertion);
+    clickNumToRemove();
+    // 给初始数据添加样式
+    document.querySelectorAll('.num-queue span').forEach(span => {
+      span.style.height = +span.textContent;
+    });
+  };
+
+  init();
+
+</script>
+</html>
