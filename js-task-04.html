@@ -5,7 +5,7 @@
     <title>IFE JavaScript Task 04</title>
   </head>
   <style media="screen">
-    #num-queue span{
+    .num-queue span{
       border: 1px solid black;
       border-radius: 3px;
       display: inline-block;
@@ -15,28 +15,28 @@
   </style>
 <body>
   <div>
-    <input type='text' id='num'/>
-    <button id='left-in'>左侧入</button>
-    <button id='right-in'>右侧入</button>
-    <button id='left-out'>左侧出</button>
-    <button id='right-out'>右侧出</button>
+    <input type='text' class='num'/>
+    <button class='left-in'>左侧入</button>
+    <button class='right-in'>右侧入</button>
+    <button class='left-out'>左侧出</button>
+    <button class='right-out'>右侧出</button>
   </div>
-  <div id='num-queue'>
+  <div class='num-queue'>
   </div>
 
 </body>
 <script>
 
-  const inputBox = document.querySelector('#num');
-  const leftIn = document.querySelector('#left-in');
-  const rightIn = document.querySelector('#right-in');
-  const leftOut = document.querySelector('#left-out');
-  const rightOut = document.querySelector('#right-out');
+  const inputBox = document.querySelector('.num');
+  const leftIn = document.querySelector('.left-in');
+  const rightIn = document.querySelector('.right-in');
+  const leftOut = document.querySelector('.left-out');
+  const rightOut = document.querySelector('.right-out');
 
   // 从右侧添加数字
 
   function appendItem(){
-    const numQueue = document.querySelector('#num-queue');
+    const numQueue = document.querySelector('.num-queue');
     const numContainer = document.createElement('span');
     if(validateInput(inputBox)){
       numContainer.textContent = inputBox.value;
@@ -47,7 +47,7 @@
   // 从左侧添加数字
 
   function insertItem(){
-    const numQueue = document.querySelector('#num-queue');
+    const numQueue = document.querySelector('.num-queue');
     const numContainer = document.createElement('span');
     if(validateInput(inputBox)){
       numContainer.textContent = inputBox.value;
@@ -58,7 +58,7 @@
   // 移除数字
 
   function removeItem(item){
-    const numQueue = document.querySelector('#num-queue');
+    const numQueue = document.querySelector('.num-queue');
     if(numQueue.firstElementChild){
       numQueue.removeChild(item);
       alert(`队列中还剩下${numQueue.children.length}个数字。`);
@@ -82,15 +82,17 @@
 
   function clickHandler(btn){
     btn.addEventListener('click', () => {
-      const numQueue = document.querySelector('#num-queue');
+      const numQueue = document.querySelector('.num-queue');
       switch (btn) {
         case rightIn:
           appendItem();
           inputBox.value = '';
+          clickNumToRemove();
           break;
         case leftIn:
           numQueue.children[0] ? insertItem() : appendItem();
           inputBox.value = '';
+          clickNumToRemove();
           break;
         case rightOut:
           removeItem(numQueue.lastElementChild);
@@ -105,7 +107,7 @@
   // 点击队列某个元素以删除该元素
 
   function clickNumToRemove(){
-    const nums = document.querySelectorAll('#num-queue span');
+    const nums = document.querySelectorAll('.num-queue span');
     nums.forEach(num => {
       num.onclick = function(){
         removeItem(this);

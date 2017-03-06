@@ -128,6 +128,7 @@
             alert('数字个数已达60上限!');
           }
           inputBox.value = '';
+          clickNumToRemove();
           break;
         case leftIn:
           if(document.querySelectorAll('.num-queue span').length < 60){
@@ -136,6 +137,7 @@
             alert('数字个数已达60上限!');
           }
           inputBox.value = '';
+          clickNumToRemove();
           break;
         case rightOut:
           removeItem(numQueue.lastElementChild);
