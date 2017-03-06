@@ -1,0 +1,193 @@
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 06</title>
+  </head>
+  <style media="screen">
+    .num-queue span{
+      border: 1px solid black;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 4px;
+      padding: 2px;
+    }
+    .num-queue {
+      margin-top: 20px;
+    }
+    .hl {
+      background:#ffc600;
+    }
+  </style>
+<body>
+  <div>
+    <textarea class='input' onchange="return trim(this)"></textarea>
+    <br/>
+    <br/>
+    <input type="text" class="search-input"/>
+    <button type="submit" class='search-btn'>查询</button>
+    <br/>
+    <br/>
+    <button class='left-in'>左侧入</button>
+    <button class='right-in'>右侧入</button>
+    <button class='left-out'>左侧出</button>
+    <button class='right-out'>右侧出</button>
+  </div>
+  <div class='num-queue'>
+    <!-- 初始数据 -->
+    <span>34</span>
+    <span>14</span>
+    <span>38</span>
+    <span>42</span>
+    <span>23</span>
+    <span>15</span>
+    <span>54</span>
+    <span>65</span>
+    <span>43</span>
+    <span>43</span>
+    <span>78</span>
+  </div>
+
+</body>
+<script>
+
+  const inputBox = document.querySelector('.input');
+  const leftIn = document.querySelector('.left-in');
+  const rightIn = document.querySelector('.right-in');
+  const leftOut = document.querySelector('.left-out');
+  const rightOut = document.querySelector('.right-out');
+  const searchBtn = document.querySelector('.search-btn');
+  const searchInput = document.querySelector('.search-input');
+
+
+  // 匹配查询内容
+
+  function findMatches(wordToMatch, items){
+    return items.filter(item => {
+      const regex = new RegExp(wordToMatch,'gi');
+      return JSON.stringify(item).match(regex);
+    })
+  };
+
+  // 为匹配内容添加高亮
+
+  function highlightMatches(){
+    const itemNodes = document.querySelectorAll('.num-queue span');
+    const itemArray = [...itemNodes].map(num => num.textContent);
+    const matchArray = findMatches(searchInput.value, itemArray);
+
+    itemNodes.forEach(node => {
+      node.className = '';
+      matchArray.forEach(arr => {
+        if(arr === node.textContent){
+          node.className = 'hl';
+        }
+      })
+    })
+  };
+
+  // 处理输入框中多余空格及分隔符
+
+  function trim(el) {
+    el.value = el.value.
+    replace(/(^[\s,;，；、。]*)|([\s,;，；、。]*$)/gi, ""). // 移除输入框首位和末位的空格及分隔符
+    replace(/[ ]{2,}/gi, " "). // 将多个空格替换为一个空格
+    replace(/\n +/, "\n"); // 移除换行之后的空格
+    return;
+  };
+
+  // 给输入项目添加适当格式
+
+  function formatItem(){
+    if(!inputBox.value || inputBox.value.match(/^  */)){
+      return; // 拒绝内容为空值或全部为空格的输入
+    } else {
+      const inputArray = inputBox.value.split(/[\s,;，；、。]+/);
+      const mapped = inputArray.map(item => {
+        return `<span>${item}</span>`;
+      });
+      return mapped.join('')
+    }
+  };
+
+  // 从右侧添加内容
+
+  function appendItem(){
+    const numQueue = document.querySelector('.num-queue');
+    formatItem() ? numQueue.innerHTML += formatItem() : inputBox.focus();
+  }
+
+
+  // 从左侧添加内容
+  function insertItem(){
+    const numQueue = document.querySelector('.num-queue');
+    let oldHTML = numQueue.innerHTML;
+    formatItem() ? (numQueue.innerHTML = formatItem() + oldHTML) : inputBox.focus();
+  }
+
+
+  // 移除项目
+
+  function removeItem(item){
+    const numQueue = document.querySelector('.num-queue');
+    if(numQueue.firstElementChild){
+      numQueue.removeChild(item);
+      alert(`队列中还剩下${numQueue.children.length}个项目。`);
+    } else {
+      alert(`队列中没有项目, 请添加。`);
+    }
+  }
+
+  // 为按钮添加点击事件
+
+  function clickHandler(btn){
+    btn.addEventListener('click', () => {
+      const numQueue = document.querySelector('.num-queue');
+      switch (btn) {
+        case rightIn:
+          appendItem();
+          inputBox.value = '';
+          clickNumToRemove();
+          break;
+        case leftIn:
+          numQueue.children[0] ? insertItem() : appendItem();
+          inputBox.value = '';
+          clickNumToRemove();
+          break;
+        case rightOut:
+          removeItem(numQueue.lastElementChild);
+          break;
+        case leftOut:
+          removeItem(numQueue.firstElementChild);
+          break;
+        case searchBtn:
+          highlightMatches();
+          searchInput.value = '';
+          break
+      }
+    })
+  };
+
+  // 点击队列某个元素以删除该元素
+
+  function clickNumToRemove(){
+    const nums = document.querySelectorAll('.num-queue span');
+    nums.forEach(num => {
+      num.onclick = function(){
+        removeItem(this);
+      }
+    });
+  };
+
+  function init(){
+    clickHandler(rightIn);
+    clickHandler(leftIn);
+    clickHandler(rightOut);
+    clickHandler(leftOut);
+    clickHandler(searchBtn);
+    clickNumToRemove();
+  };
+
+  init();
+</script>
+</html>
