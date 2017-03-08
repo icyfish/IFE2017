@@ -1,0 +1,263 @@
+<!DOCTYPE>
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task2 02</title>
+  </head>
+  <style type="text/css">
+    body{
+      position: relative;
+    }
+    .container{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .block{
+      margin: 5px;
+    }
+    label{
+      display: inline-block;
+      width: 70px;
+      text-align: right;
+      margin: 10px;
+    }
+    input{
+      width: 200px;
+    }
+    button{
+      float: right;
+    }
+    .prompt-message{
+      color: gray;
+      padding-left: 93px;
+    }
+    .error{
+      color: red;
+      padding-left: 93px;
+    }
+    .pass{
+      color: green;
+      padding-left: 93px;
+    }
+    .error-box{
+      border: 1px solid red;
+    }
+    .pass-box{
+      border: 1px solid green;
+    }
+  </style>
+
+  <body>
+    <div class="container">
+      <form name="info-form">
+        <div class="username">
+          <label for="username">名称</label>
+          <input name="username" type="text" class="input-box"/>
+          <div class="prompt-message"></div>
+        </div>
+        <div class="password">
+          <label for="password">密码</label>
+          <input name="password" type="password" class="input-box"/>
+          <div class="prompt-message"></div>
+        </div>
+        <div class="psw-confirmation">
+          <label for="psw-confirmation">密码确认</label>
+          <input name="psw-confirmation" type="password" class="input-box"/>
+          <div class="prompt-message"></div>
+        </div>
+        <div class="email">
+          <label for="email">邮箱</label>
+          <input name="email" type="email" class="input-box"/></label>
+          <div class="prompt-message"></div>
+        </div>
+        <div class="phone">
+          <label for="phone">手机</label>
+          <input name="phone" type="text" class="input-box"/>
+          <div class="prompt-message"></div>
+        </div>
+        <div class="submit">
+          <button type="submit" class='btn'>提交</button>
+        </div>
+      </form>
+    </div>
+    <script type="text/javascript">
+
+      const submitBtn = document.querySelector('.btn');
+
+      const infoForm = document.forms['info-form'];
+      const nameInput = document.forms['info-form']['username'];
+      const passwordInput = document.forms['info-form']['password'];
+      const pswConfirmInput = document.forms['info-form']['psw-confirmation'];
+      const phoneInput = document.forms['info-form']['phone'];
+      const emailInput = document.forms['info-form']['email'];
+
+      const username = document.querySelector('.username');
+      const password = document.querySelector('.password');
+      const pswConfirm = document.querySelector('.psw-confirmation');
+      const email = document.querySelector('.email');
+      const phone = document.querySelector('.phone');
+
+      // 显示表单填写规则
+      function showPrompt(inputBox, inputType, message){
+        inputBox.onfocus = () => {
+          inputType.querySelector('.prompt-message').classList.remove('error');
+          inputType.querySelector('.prompt-message').classList.remove('pass');
+          inputType.querySelector('.prompt-message').textContent = message;
+        }
+      };
+
+      // 显示校验结果错误效果
+      function showError(inputBox, inputType, errorMsg){
+        inputType.querySelector('.prompt-message').textContent = errorMsg;
+        inputType.querySelector('.prompt-message').classList.add('error');
+        inputBox.classList.add('error-box');
+      };
+
+      // 显示校验结果正确效果
+      function showPass(inputBox, inputType, passMsg){
+        inputType.querySelector('.prompt-message').textContent = passMsg;
+        inputType.querySelector('.prompt-message').classList.add('pass');
+        inputBox.classList.add('pass-box');
+      };
+
+
+      // 检查是否为英文字符
+      function isEn(char){
+        return (char.charCodeAt() >= 0x00 && char.charCodeAt() <= 0xFF);
+      };
+
+      // 获取名称的字符串实际长度
+      function getSumOfChars(){
+        const inputArr = nameInput.value.split('');
+        const sumOfChars = inputArr.reduce((accumulator, char) => {
+          if(!isEn(char)) {
+            return accumulator = accumulator + 2;
+          }
+          return ++accumulator;
+        }, 0);
+
+        return sumOfChars;
+      };
+
+      // 检查名称输入的正确性
+      function validateName(){
+        const sumOfChars = getSumOfChars();
+        const inCharsLimit = (sumOfChars >= 4 && sumOfChars <= 16);
+        return inCharsLimit;
+      };
+
+      // 检查密码输入正确性
+      function validatePassword(){
+        return passwordInput.value !== "";
+      };
+
+      // 检查两次密码输入是否一致
+      function validatePswConfirm(){
+        return passwordInput.value !== "" && passwordInput.value === pswConfirmInput.value;
+      };
+
+      // 检查email输入正确性
+      function validateEmail() {
+        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(emailInput.value);
+      };
+
+      // 检查电话号码格式
+      function validatePhone(){
+        const re = /^[0-9]+$/;
+        return re.test(phoneInput.value);
+      }
+
+      // 显示校验结果
+
+      function displayNameValidation(){
+        validateName() ? showPass(nameInput, username, '名称可用') : showError(nameInput, username, '名称格式错误');
+      };
+
+      function displayPasswordValidation(){
+        validatePassword() ? showPass(passwordInput, password, '密码可用') : showError(passwordInput, password, '密码格式错误');
+      };
+
+      function displayPswConfirmValidation(){
+        validatePswConfirm() ? showPass(pswConfirmInput, pswConfirm, '两次密码输入一致') : showError(pswConfirmInput, pswConfirm, '两次密码不一致');
+      };
+
+      function displayEmailValidation(){
+        validateEmail() ? showPass(emailInput, email, '邮箱格式正确') : showError(emailInput, email, '邮箱格式错误');
+      };
+
+      function displayPhoneValidation(){
+        validatePhone() ? showPass(phoneInput, phone, '手机号格式正确') : showError(phoneInput, phone, '手机号格式错误');
+      };
+
+      // 校验处理函数
+
+      function validationHandler(input){
+        input.addEventListener('blur',() => {
+          switch (input) {
+            case nameInput:
+              displayNameValidation();
+              break;
+            case passwordInput:
+              displayPasswordValidation();
+              break;
+            case pswConfirmInput:
+              displayPswConfirmValidation();
+              break;
+            case emailInput:
+              displayEmailValidation();
+              break;
+            case phoneInput:
+              displayPhoneValidation();
+              break;
+          }
+        })
+      };
+
+      // 点击提交检查所有输入格式并显示校验结果
+
+      function onFormSubmission(){
+          submitBtn.addEventListener('click',(e) => {
+          displayNameValidation();
+          displayPasswordValidation();
+          displayPswConfirmValidation();
+          displayEmailValidation();
+          displayPhoneValidation();
+          e.preventDefault();
+          if(!validateName() || !validatePassword() || !validatePswConfirm() || !validateEmail() || !validatePhone()){
+            alert('提交失败');
+            return false;
+          } else {
+            alert('提交成功');
+            return true;
+          }
+        })
+      };
+
+      function init(){
+
+        // 点击输入框显示提示文字
+        showPrompt(nameInput, username, '必填, 长度为4~16个字符');
+        showPrompt(passwordInput, password, '请输入密码');
+        showPrompt(pswConfirmInput, pswConfirm, '再次输入相同密码');
+        showPrompt(emailInput, email, '请输入邮箱地址');
+        showPrompt(phoneInput, phone, '请输入手机号');
+
+        validationHandler(nameInput);
+        validationHandler(passwordInput);
+        validationHandler(pswConfirmInput);
+        validationHandler(emailInput);
+        validationHandler(phoneInput);
+
+        onFormSubmission();
+
+      };
+
+
+      init();
+    </script>
+  </body>
+</html>
