@@ -1,0 +1,130 @@
+<!DOCTYPE>
+<!DOCTYPE>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>IFE JavaScript Task2 03</title>
+</head>
+<style type="text/css">
+  body{
+    position: relative;
+  }
+  .container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  label{
+    margin: 10px;
+  }
+  select{
+    margin: 10px;
+  }
+  .hidden{
+    display: none;
+  }
+
+</style>
+
+<body>
+  <div class="container">
+    <form name='identity-form' class="identity-form">
+      <label><input type="radio" name="student" class='student'>在校生</label>
+      <label><input type="radio" name="student" class='non-student'>非在校生</label>
+    </form>
+
+    <form name="school-form" class='school-form hidden'>
+      <label>学校
+      <select name='city'>
+        <option value="hongkong" class='hongkong'>香港</option>
+        <option value="shanghai" class='shanghai'>上海</option>
+        <option value="beijing" class='beijing'>北京</option>
+      </select>
+
+      <select name="school" id="school">
+      </select>
+
+      </label>
+    </form>
+
+    <form name="company-form" class='company-form hidden'>
+      <label>就业单位
+        <input type="text" name="company">
+      </label>
+    </form>
+
+  </div>
+</body>
+<script>
+  const identityForm = document.forms['identity-form'];
+  const schoolForm = document.forms['school-form'];
+  const companyForm = document.forms['company-form'];
+
+  const schoolSelection = schoolForm.elements['school'];
+
+  const student = identityForm.querySelector('.student');
+  const nonStudent = identityForm.querySelector('.non-student');
+
+  const cities = {
+    hongkong: {
+      schools: ['香港大学', '香港科技大学', '香港浸会大学']
+    },
+    shanghai: {
+      schools: ['复旦大学', '上海交通大学', '同济大学']
+    },
+    beijing: {
+      schools: ['北京大学', '清华大学', '人民大学']
+    }
+  };
+
+  // 根据是否在校生显示不同表格
+
+  function identityHandler(){
+    student.addEventListener('click',() => {
+      if(student.checked){
+        companyForm.classList.add('hidden');
+        schoolForm.classList.remove('hidden');
+      }
+    });
+
+    nonStudent.addEventListener('click',() => {
+      if(nonStudent.checked){
+        schoolForm.classList.add('hidden');
+        companyForm.classList.remove('hidden');
+      }
+    });
+  };
+
+  // 添加学校选项到select标签
+
+  function addDataToSelect(select, obj){
+    select.innerHTML = '';
+    obj.schools.forEach(school => {
+      let optionItem = document.createElement('option');
+      optionItem.appendChild(document.createTextNode(school))
+      select.appendChild(optionItem);
+    });
+  };
+
+  // 根据城市选择渲染不同的学校内容
+
+  function renderSchools(){
+    addDataToSelect(schoolSelection, cities.hongkong);
+    schoolForm.elements['city'].addEventListener('change',() => {
+      let chosenCity = schoolForm.elements['city'].value;
+      addDataToSelect(schoolSelection, cities[chosenCity]);
+    })
+  };
+
+
+  function init(){
+    identityHandler();
+    renderSchools();
+  };
+
+  init();
+</script>
+
+</html>
