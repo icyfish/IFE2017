@@ -1,0 +1,192 @@
+<!DOCTYPE>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>IFE JavaScript Task2 04</title>
+  <style type="text/css">
+    body{
+      margin: 100px;
+    }
+
+    table {
+      border: 1px solid #aaa;
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+    table td{
+      border: 1px solid #aaa;
+      padding: 20px;
+      text-align:center;
+    }
+
+    .board {
+      width: 410px;
+      height: 410px;
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .block {
+      width: 41px;
+      height: 41px;
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="board">
+    <table>
+      <tbody class="grid"></tbody>
+    </table>
+
+  </div>
+  <div class="control">
+    <input class="command" type="text" />
+    <input class="execute" type="button" value="执行" />
+    <ul>
+      <li>GO：向蓝色边所面向的方向前进一格</li>
+      <li>TUN LEF：向左转（逆时针旋转90度）</li>
+      <li>TUN RIG：向右转（顺时针旋转90度）</li>
+      <li>TUN BAC：向右转（旋转180度）</li>
+      <li>键盘上键, 蓝色边朝上</li>
+      <li>键盘下键, 蓝色边朝下</li>
+      <li>键盘左键, 蓝色边朝左</li>
+      <li>键盘右键, 蓝色边朝右</li>
+      <li>键盘回车键/空格键, 前进一格</li>
+    </ul>
+  </div>
+
+  <script type="text/javascript">
+    const STEP = 41;
+    const grid = document.querySelector('.grid');
+    const command = document.querySelector('.command');
+    const block = document.createElement('div');
+    const board = document.querySelector('.board');
+    const execute = document.querySelector('.execute');
+
+  // 创建10X10空格
+    function createGrid(){
+      for (var i = 0; i < 10; i++) {
+        var tRows = [];
+        tRows[i] = document.createElement('tr');
+        grid.appendChild(tRows[i]);
+        var tData = [];
+        for (var j = 0; j < 10; j++){
+          tData[j] = document.createElement('td');
+          tRows[i].appendChild(tData[j]);
+        }
+      }
+    }
+  // 给移动方块添加样式
+    function styleBlock(){
+      block.className = 'block';
+      board.appendChild(block);
+      block.style.left = '0';
+      block.style.top = '0';
+      let direction = 'left';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+  // 向前移动
+    function moveForword(){
+      switch (direction){
+        case 'left':
+          block.style.left = parseInt(block.style.left) - STEP + 'px';
+          if(parseInt(block.style.left) < 0){
+            block.style.left = '0';
+          }
+          break;
+        case 'top':
+          block.style.top = parseInt(block.style.top) - STEP + 'px';
+          if(parseInt(block.style.top) < 0){
+            block.style.top = '0';
+          }
+          break;
+        case 'right':
+          block.style.left = parseInt(block.style.left) + STEP + 'px';
+          if(parseInt(block.style.left) > 369){
+            block.style.left = '369px';
+          }
+          break;
+        case 'bottom':
+          block.style.top = parseInt(block.style.top) + STEP + 'px';
+          if(parseInt(block.style.top) > 369){
+            block.style.top = '369px';
+          }
+          break;
+      }
+    }
+  // 根据键盘输入执行相应事件
+    function keyListener(){
+      document.body.addEventListener('keydown', e => {
+        switch (e.which){
+          case 38:
+            direction = 'top';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 40:
+            direction = 'bottom';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 37:
+            direction = 'left';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 39:
+            direction = 'right';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 13:
+          case 32:
+            moveForword();
+            break;
+        }
+      });
+
+    }
+  // 根据输入指令执行相应事件
+    function inputExecution(){
+      execute.addEventListener('click', () => {
+        switch (command.value) {
+          case 'TUN LEF':
+            if(direction === 'left') direction = 'bottom';
+            else if(direction === 'bottom') direction = 'right';
+            else if(direction === 'right') direction = 'top';
+            else if(direction === 'top') direction = 'left';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 'TUN RIG':
+            if(direction === 'left') direction = 'top';
+            else if(direction === 'top') direction = 'right';
+            else if(direction === 'right') direction = 'bottom';
+            else if(direction === 'bottom') direction = 'left';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 'TUN BAC':
+            if(direction === 'left') direction = 'right';
+            else if(direction === 'right') direction = 'left';
+            else if(direction === 'bottom') direction = 'top';
+            else if(direction === 'top') direction = 'bottom';
+            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            break;
+          case 'GO':
+            moveForword();
+            break;
+
+        }
+      })
+    }
+
+    function init(){
+      createGrid();
+      styleBlock();
+      keyListener();
+      inputExecution();
+    }
+
+    init();
+
+  </script>
+</body>
+</html>
