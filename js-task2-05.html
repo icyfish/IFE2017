@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>IFE JavaScript Task2 04</title>
+  <title>IFE JavaScript Task2 05</title>
   <style type="text/css">
     body{
       margin: 100px;
@@ -55,6 +55,10 @@
       <li>键盘左键, 蓝色边朝左</li>
       <li>键盘右键, 蓝色边朝右</li>
       <li>键盘回车键/空格键, 前进一格</li>
+      <li>MOV LEF：方向转向屏幕左侧，并向屏幕的左侧移动一格</li>
+      <li>MOV TOP：方向转向屏幕上面，向屏幕的上面移动一格</li>
+      <li>MOV RIG：方向转向屏幕右侧，向屏幕的右侧移动一格</li>
+      <li>MOV BOT：方向转向屏幕下面，向屏幕的下面移动一格</li>
     </ul>
   </div>
 
@@ -125,19 +129,19 @@
         switch (e.which){
           case 38:
             direction = 'top';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(direction);
             break;
           case 40:
             direction = 'bottom';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(direction);
             break;
           case 37:
             direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(direction);
             break;
           case 39:
             direction = 'right';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(direction);
             break;
           case 13:
           case 32:
@@ -147,35 +151,74 @@
       });
 
     }
+    // 改变方块朝向
+    function turnTo(dir){
+      block.style.background = `-webkit-linear-gradient(${dir}, blue, blue 30%,  red 30%, red)`;
+    }
+
+    // 逆时针转动
+    function turnCounterClockwise(){
+      if(direction === 'left') direction = 'bottom';
+      else if(direction === 'bottom') direction = 'right';
+      else if(direction === 'right') direction = 'top';
+      else if(direction === 'top') direction = 'left';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
+    // 顺时针转动
+    function turnClockwise(){
+      if(direction === 'left') direction = 'top';
+      else if(direction === 'top') direction = 'right';
+      else if(direction === 'right') direction = 'bottom';
+      else if(direction === 'bottom') direction = 'left';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
+    // 转至反方向
+    function turnBack(){
+      if(direction === 'left') direction = 'right';
+      else if(direction === 'right') direction = 'left';
+      else if(direction === 'bottom') direction = 'top';
+      else if(direction === 'top') direction = 'bottom';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
   // 根据输入指令执行相应事件
     function inputExecution(){
       execute.addEventListener('click', () => {
         switch (command.value) {
           case 'TUN LEF':
-            if(direction === 'left') direction = 'bottom';
-            else if(direction === 'bottom') direction = 'right';
-            else if(direction === 'right') direction = 'top';
-            else if(direction === 'top') direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnCounterClockwise();
             break;
           case 'TUN RIG':
-            if(direction === 'left') direction = 'top';
-            else if(direction === 'top') direction = 'right';
-            else if(direction === 'right') direction = 'bottom';
-            else if(direction === 'bottom') direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnClockwise();
             break;
           case 'TUN BAC':
-            if(direction === 'left') direction = 'right';
-            else if(direction === 'right') direction = 'left';
-            else if(direction === 'bottom') direction = 'top';
-            else if(direction === 'top') direction = 'bottom';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnBack();
             break;
           case 'GO':
             moveForword();
             break;
-
+          case 'MOV LEF':
+            direction = 'left';
+            turnTo(direction);
+            moveForword();
+            break;
+          case 'MOV RIG':
+            direction = 'right';
+            turnTo(direction);
+            moveForword();
+            break;
+          case 'MOV TOP':
+            direction = 'top';
+            turnTo(direction);
+            moveForword();
+            break;
+          case 'MOV BOT':
+            direction = 'bottom';
+            turnTo(direction);
+            moveForword();
+            break;
         }
       })
     }
@@ -188,7 +231,7 @@
     }
 
     init();
-    })();
+  })();
 
   </script>
 </body>
