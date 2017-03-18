@@ -119,63 +119,90 @@
           break;
       }
     }
-  // 根据键盘输入执行相应事件
+
+    // 改变方块朝向
+    function turnTo(e, dir){ 
+      if(e.target.localName !== 'input'){
+        e.preventDefault();
+        block.style.background = `-webkit-linear-gradient(${dir}, blue, blue 30%,  red 30%, red)`;
+      }
+    }
+
+    // 根据键盘输入执行相应事件
     function keyListener(){
       document.body.addEventListener('keydown', e => {
         switch (e.which){
           case 38:
             direction = 'top';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(e, direction);
             break;
           case 40:
             direction = 'bottom';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(e, direction);
             break;
           case 37:
             direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(e, direction);
             break;
           case 39:
             direction = 'right';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnTo(e, direction);
             break;
           case 13:
-          case 32:
-            moveForword();
+          case 32: 
+            if(e.target.localName !== 'input'){
+              e.preventDefault();
+              moveForword();
+            }
             break;
         }
       });
 
     }
+ 
+    // 逆时针转动
+    function turnCounterClockwise(){
+      if(direction === 'left') direction = 'bottom';
+      else if(direction === 'bottom') direction = 'right';
+      else if(direction === 'right') direction = 'top';
+      else if(direction === 'top') direction = 'left';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
+    // 顺时针转动
+    function turnClockwise(){
+      if(direction === 'left') direction = 'top';
+      else if(direction === 'top') direction = 'right';
+      else if(direction === 'right') direction = 'bottom';
+      else if(direction === 'bottom') direction = 'left';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
+    // 转至反方向
+    function turnBack(){
+      if(direction === 'left') direction = 'right';
+      else if(direction === 'right') direction = 'left';
+      else if(direction === 'bottom') direction = 'top';
+      else if(direction === 'top') direction = 'bottom';
+      block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+    }
+
   // 根据输入指令执行相应事件
     function inputExecution(){
       execute.addEventListener('click', () => {
         switch (command.value) {
           case 'TUN LEF':
-            if(direction === 'left') direction = 'bottom';
-            else if(direction === 'bottom') direction = 'right';
-            else if(direction === 'right') direction = 'top';
-            else if(direction === 'top') direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnCounterClockwise();
             break;
           case 'TUN RIG':
-            if(direction === 'left') direction = 'top';
-            else if(direction === 'top') direction = 'right';
-            else if(direction === 'right') direction = 'bottom';
-            else if(direction === 'bottom') direction = 'left';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnClockwise();
             break;
           case 'TUN BAC':
-            if(direction === 'left') direction = 'right';
-            else if(direction === 'right') direction = 'left';
-            else if(direction === 'bottom') direction = 'top';
-            else if(direction === 'top') direction = 'bottom';
-            block.style.background = `-webkit-linear-gradient(${direction}, blue, blue 30%,  red 30%, red)`;
+            turnBack();
             break;
           case 'GO':
             moveForword();
             break;
-
         }
       })
     }

@@ -129,32 +129,42 @@
         switch (e.which){
           case 38:
             direction = 'top';
-            turnTo(direction);
+            turnTo(e, direction);
             break;
           case 40:
             direction = 'bottom';
-            turnTo(direction);
+            turnTo(e, direction);
             break;
           case 37:
             direction = 'left';
-            turnTo(direction);
+            turnTo(e, direction);
             break;
           case 39:
             direction = 'right';
-            turnTo(direction);
+            turnTo(e, direction);
             break;
           case 13:
-          case 32:
-            moveForword();
+          case 32: 
+            if(e.target.localName !== 'input'){
+              e.preventDefault();
+              moveForword();
+            }
             break;
         }
       });
 
     }
     // 改变方块朝向
-    function turnTo(dir){
-      block.style.background = `-webkit-linear-gradient(${dir}, blue, blue 30%,  red 30%, red)`;
+    function turnTo(e, dir){ 
+      if(e === null){
+        block.style.background = `-webkit-linear-gradient(${dir}, blue, blue 30%,  red 30%, red)`;
+      }
+      else if(e.target.localName !== 'input'){
+        e.preventDefault();
+      } 
+        block.style.background = `-webkit-linear-gradient(${dir}, blue, blue 30%,  red 30%, red)`;
     }
+    
 
     // 逆时针转动
     function turnCounterClockwise(){
@@ -201,22 +211,22 @@
             break;
           case 'MOV LEF':
             direction = 'left';
-            turnTo(direction);
+            turnTo(null, direction);
             moveForword();
             break;
           case 'MOV RIG':
             direction = 'right';
-            turnTo(direction);
+            turnTo(null, direction);
             moveForword();
             break;
           case 'MOV TOP':
             direction = 'top';
-            turnTo(direction);
+            turnTo(null, direction);
             moveForword();
             break;
           case 'MOV BOT':
             direction = 'bottom';
-            turnTo(direction);
+            turnTo(null, direction);
             moveForword();
             break;
         }
